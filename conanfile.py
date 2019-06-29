@@ -68,7 +68,9 @@ class LibxsltConan(ConanFile):
                         'include="%s"' % ";".join(self.deps_cpp_info.include_paths),
                         'lib="%s"' % ";".join(self.deps_cpp_info.lib_paths),
                         'python=no',
-                        'iconv=no xslt_debug=no debugger=no',
+                        'iconv=no',
+                        'xslt_debug=no',
+                        'debugger=no',
                         'crypto=no']
                 configure_command = ' '.join(args)
                 self.output.info(configure_command)

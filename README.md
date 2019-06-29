@@ -1,4 +1,4 @@
-## Conan package recipe for [*libxslt*](https://xmlsoft.org/XSLT/)
+## Conan package recipe for [*libxslt*](http://xmlsoft.org/XSLT/)
 
 libxslt is a software library implementing XSLT processor, based on libxml2. It also implements most of the EXSLT set
 of processor-portable extensions functions and some of Saxon's evaluate and expressions extensions.

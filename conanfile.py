@@ -87,11 +87,7 @@ class LibxsltConan(ConanFile):
                                               "LIBS = $(LIBS) %s" % old_libname,
                                               "LIBS = $(LIBS) %s" % ' '.join(libs))
 
-                #fix_library(self.options.zlib, 'zlib', 'zlib.lib')
-                #fix_library(self.options.lzma, 'lzma', 'liblzma.lib')
-                #fix_library(self.options.iconv, 'libiconv', 'iconv.lib')
-                #fix_library(self.options.icu, 'icu', 'advapi32.lib sicuuc.lib sicuin.lib sicudt.lib')
-                #fix_library(self.options.icu, 'icu', 'icuuc.lib icuin.lib icudt.lib')
+                fix_library(True, 'icu', 'wsock32.lib')
 
                 self.run("nmake /f Makefile.msvc install")
 
@@ -143,9 +139,9 @@ class LibxsltConan(ConanFile):
 #            os.unlink(os.path.join(self.package_folder, 'lib',
 #                                   'libxml2_a.lib'))
 #                                   #'libxml1_a.lib' if self.options.shared else 'libxml2.lib'))
-#        la = os.path.join(self.package_folder, 'lib', 'libxslt.la')
-#        if os.path.isfile(la):
-#            os.unlink(la)
+        la = os.path.join(self.package_folder, 'lib', 'libxslt.la')
+        if os.path.isfile(la):
+            os.unlink(la)
 
     def package_info(self):
         if self._is_msvc:

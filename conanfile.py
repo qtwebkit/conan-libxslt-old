@@ -5,41 +5,26 @@ import os
 from conans import ConanFile, tools, AutoToolsBuildEnvironment
 
 
-class Libxml2Conan(ConanFile):
-    name = "libxml2"
-    version = "2.9.9"
-    url = "https://github.com/qtwebkit/conan-libxml2"
-    description = "libxml2 is a software library for parsing XML documents"
+class LibxsltConan(ConanFile):
+    name = "libxslt"
+    version = "1.1.33"
+    url = "https://github.com/qtwebkit/conan-libxslt"
+    description = "libxslt is a software library implementing XSLT processor, based on libxml2"
     author = "Bincrafters <bincrafters@gmail.com>"
-    topics = "XML", "parser", "validation"
+    topics = "XSLT", "processor"
     homepage = "https://xmlsoft.org"
     license = "MIT"
     settings = "os", "arch", "compiler", "build_type"
     options = {#"shared": [True, False],
-               "fPIC": [True, False],
-               "zlib": [True, False],
-               "lzma": [True, False],
-               "iconv": [True, False],
-               "icu": [True, False]}
+               "fPIC": [True, False]}
     default_options = {#'shared': False,
-                       'fPIC': True,
-                       "iconv": True,
-                       "zlib": True,
-                       "lzma": False,
-                       "icu": False}
+                       'fPIC': True}
     exports = ["LICENSE.md"]
     exports_sources = ["FindLibXml2.cmake"]
     _source_subfolder = "source_subfolder"
 
     def requirements(self):
-        if self.options.zlib:
-            self.requires("zlib/1.2.11@conan/stable")
-        if self.options.lzma:
-            self.requires("lzma/5.2.4@bincrafters/stable")
-        if self.options.iconv:
-            self.requires("libiconv/1.15@bincrafters/stable")
-        if self.options.icu:
-            self.requires("icu/63.2@qtproject/stable")
+        self.requires("libxml2/2.9.9@qtproject/stable")
 
     @property
     def _is_msvc(self):
@@ -50,9 +35,9 @@ class Libxml2Conan(ConanFile):
         return os.path.join(self.source_folder, self._source_subfolder)
 
     def source(self):
-        tools.get("http://xmlsoft.org/sources/libxml2-{0}.tar.gz".format(self.version),
-                  sha256="94fb70890143e3c6549f265cee93ec064c80a84c42ad0f23e85ee1fd6540a871")
-        os.rename("libxml2-{0}".format(self.version), self._source_subfolder)
+        tools.get("http://xmlsoft.org/sources/libxslt-{0}.tar.gz".format(self.version),
+                  sha256="8e36605144409df979cab43d835002f63988f3dc94d5d3537c12796db90e38c8")
+        os.rename("libxslt-{0}".format(self.version), self._source_subfolder)
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -75,10 +60,6 @@ class Libxml2Conan(ConanFile):
             with tools.vcvars(self.settings):
                 args = ["cscript",
                         "configure.js",
-                        "zlib=%d" % (1 if self.options.zlib else 0),
-                        "lzma=%d" % (1 if self.options.lzma else 0),
-                        "iconv=%d" % (1 if self.options.iconv else 0),
-                        "icu=%d" % (1 if self.options.icu else 0),
                         "compiler=msvc",
                         "prefix=%s" % self.package_folder,
                         "cruntime=/%s" % self.settings.compiler.runtime,
@@ -87,17 +68,8 @@ class Libxml2Conan(ConanFile):
                         'include="%s"' % ";".join(self.deps_cpp_info.include_paths),
                         'lib="%s"' % ";".join(self.deps_cpp_info.lib_paths),
                         'python=no',
-                        'valid=no',
-                        'xinclude=no',
-                        'xptr=no',
-                        'c14n=no',
-                        'catalog=no',
-                        'regexps=no',
-                        'schemas=no',
-                        'schematron=no',
-                        'legacy=no',
-                        'ftp=no',
-                        'http=no']
+                        'iconv=no xslt_debug=no debugger=no',
+                        'crypto=no']
                 configure_command = ' '.join(args)
                 self.output.info(configure_command)
                 self.run(configure_command)
@@ -115,11 +87,11 @@ class Libxml2Conan(ConanFile):
                                               "LIBS = $(LIBS) %s" % old_libname,
                                               "LIBS = $(LIBS) %s" % ' '.join(libs))
 
-                fix_library(self.options.zlib, 'zlib', 'zlib.lib')
-                fix_library(self.options.lzma, 'lzma', 'liblzma.lib')
-                fix_library(self.options.iconv, 'libiconv', 'iconv.lib')
-                fix_library(self.options.icu, 'icu', 'advapi32.lib sicuuc.lib sicuin.lib sicudt.lib')
-                fix_library(self.options.icu, 'icu', 'icuuc.lib icuin.lib icudt.lib')
+                #fix_library(self.options.zlib, 'zlib', 'zlib.lib')
+                #fix_library(self.options.lzma, 'lzma', 'liblzma.lib')
+                #fix_library(self.options.iconv, 'libiconv', 'iconv.lib')
+                #fix_library(self.options.icu, 'icu', 'advapi32.lib sicuuc.lib sicuin.lib sicudt.lib')
+                #fix_library(self.options.icu, 'icu', 'icuuc.lib icuin.lib icudt.lib')
 
                 self.run("nmake /f Makefile.msvc install")
 
@@ -139,22 +111,10 @@ class Libxml2Conan(ConanFile):
             configure_args.extend(['--enable-shared', '--disable-static'])
         else:
             configure_args.extend(['--enable-static', '--disable-shared'])
-        configure_args.extend(['--with-zlib' if self.options.zlib else '--without-zlib'])
-        configure_args.extend(['--with-lzma' if self.options.lzma else '--without-lzma'])
-        configure_args.extend(['--with-iconv' if self.options.iconv else '--without-iconv'])
-        configure_args.extend(['--with-icu' if self.options.icu else '--without-icu'])
         configure_args.extend([
-            '--without-valid',
-            '--without-xinclude',
-            '--without-xptr',
-            '--without-c14n',
-            '--without-catalog',
-            '--without-regexps',
-            '--without-schemas',
-            '--without-schematron',
-            '--without-legacy',
-            '--without-ftp',
-            '--without-http'])
+            '--without-crypto',
+            '--without-debugger',
+            '--without-plugins'])
 
         # Disable --build when building for iPhoneSimulator. The configure script halts on
         # not knowing if it should cross-compile.
@@ -166,7 +126,7 @@ class Libxml2Conan(ConanFile):
         env_build.make(args=["install"])
 
     def package(self):
-        self.copy("FindLibXml2.cmake", ".", ".")
+        #self.copy("FindLibXml2.cmake", ".", ".")
         # copy package license
         self.copy("COPYING", src=self._full_source_subfolder, dst="licenses", ignore_case=True, keep_path=False)
         if self.settings.os == "Windows":
@@ -174,26 +134,26 @@ class Libxml2Conan(ConanFile):
             for prefix in ["run", "test"]:
                 for test in glob.glob("%s/bin/%s*" % (self.package_folder, prefix)):
                     os.remove(test)
-        for header in ["win32config.h", "wsockcompat.h"]:
-            self.copy(pattern=header, src=os.path.join(self._full_source_subfolder, "include"),
-                      dst=os.path.join("include", "libxml2"), keep_path=False)
-        if self._is_msvc:
-            # remove redundant libraries to avoid confusion
-            os.unlink(os.path.join(self.package_folder, 'lib', 'libxml2_a_dll.lib'))
-            os.unlink(os.path.join(self.package_folder, 'lib',
-                                   'libxml2_a.lib'))
-                                   #'libxml2_a.lib' if self.options.shared else 'libxml2.lib'))
-        la = os.path.join(self.package_folder, 'lib', 'libxml2.la')
-        if os.path.isfile(la):
-            os.unlink(la)
+#        for header in ["win32config.h", "wsockcompat.h"]:
+#            self.copy(pattern=header, src=os.path.join(self._full_source_subfolder, "include"),
+#                      dst=os.path.join("include", "libxml2"), keep_path=False)
+#        if self._is_msvc:
+#            # remove redundant libraries to avoid confusion
+#            os.unlink(os.path.join(self.package_folder, 'lib', 'libxml2_a_dll.lib'))
+#            os.unlink(os.path.join(self.package_folder, 'lib',
+#                                   'libxml2_a.lib'))
+#                                   #'libxml1_a.lib' if self.options.shared else 'libxml2.lib'))
+#        la = os.path.join(self.package_folder, 'lib', 'libxslt.la')
+#        if os.path.isfile(la):
+#            os.unlink(la)
 
     def package_info(self):
         if self._is_msvc:
             # self.cpp_info.libs = ['libxml2' if self.options.shared else 'libxml2_a']
-            self.cpp_info.libs = ['libxml2']
+            self.cpp_info.libs = ['libxslt']
         else:
-            self.cpp_info.libs = ['xml2']
-        self.cpp_info.includedirs = [os.path.join("include", "libxml2")]
+            self.cpp_info.libs = ['xslt']
+        self.cpp_info.includedirs = [os.path.join("include", "libxslt")]
         #if not self.options.shared:
         #    self.cpp_info.defines = ["LIBXML_STATIC"]
         if self.settings.os == "Linux" or self.settings.os == "Macos":

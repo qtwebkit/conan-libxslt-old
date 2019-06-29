@@ -1,0 +1,31 @@
+build: false
+
+environment:
+    PYTHON_HOME: "C:\\Python37"
+
+    CONAN_USERNAME: "qtproject"
+    CONAN_LOGIN_USERNAME: "annulen"
+    CONAN_CHANNEL: "stable"
+    CONAN_UPLOAD: "https://api.bintray.com/conan/qtproject/conan"
+    CONAN_REMOTES: "https://api.bintray.com/conan/qtproject/conan"
+    CONAN_OPTIONS: "libxml2:iconv=False,libxml2:icu=True,libxml2:zlib=False,icu:data_packaging=library"
+
+    matrix:
+        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+          CONAN_VISUAL_VERSIONS: 14
+          CONAN_BUILD_TYPES: Release
+          CONAN_VISUAL_RUNTIMES: MD
+        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+          CONAN_VISUAL_VERSIONS: 15
+          CONAN_BUILD_TYPES: Release
+          CONAN_VISUAL_RUNTIMES: MD
+        - MINGW_CONFIGURATIONS: '7@x86@dwarf2@posix'
+        - MINGW_CONFIGURATIONS: '7@x86_64@seh@posix'
+
+install:
+  - set PATH=%PYTHON_HOME%;%PYTHON_HOME%/Scripts/;%PATH%
+  - pip.exe install --upgrade conan==1.16.1 conan_package_tools==0.28.1 bincrafters_package_tools==0.18.2
+  - conan user # It creates the conan data directory
+
+test_script:
+  - python build.py

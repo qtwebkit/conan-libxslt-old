@@ -85,8 +85,8 @@ class LibxsltConan(ConanFile):
                                 libname += '.lib'
                             libs.append(libname)
                         tools.replace_in_file("Makefile.msvc",
-                                              "LIBS = $(LIBS) %s" % old_libname,
-                                              "LIBS = $(LIBS) %s" % ' '.join(libs))
+                                              "LIBS = %s" % old_libname,
+                                              "LIBS = %s" % ' '.join(libs))
 
                 fix_library(True, 'icu', 'wsock32.lib')
 

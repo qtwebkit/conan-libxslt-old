@@ -123,7 +123,7 @@ class LibxsltConan(ConanFile):
 
         env_build.include_paths.extend(self.deps_cpp_info["icu"].include_paths)
         env_build.configure(args=configure_args, build=build, configure_dir=self._full_source_subfolder, vars={"XML_CONFIG": xml_config})
-        env_build.make(args=["install", "VERBOSE=1"])
+        env_build.make(args=["install", "V=1"])
 
     def package(self):
         #self.copy("FindLibXml2.cmake", ".", ".")

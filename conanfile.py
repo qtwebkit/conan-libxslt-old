@@ -121,7 +121,10 @@ class LibxsltConan(ConanFile):
 
         xml_config = tools.unix_path(self.deps_cpp_info["libxml2"].rootpath) + "/bin/xml2-config"
 
-        env_build.include_paths.extend(self.deps_cpp_info["icu"].include_paths)
+        self.output.info("icu include_paths = {0} rootpath={1}".format(self.deps_cpp_info["icu"].include_paths, self.deps_cpp_info["icu"].rootpath))
+
+        for p in self.deps_cpp_info["icu"].include_paths:
+            env_build.include_paths.append(tools.unix_path(p))
         env_build.configure(args=configure_args, build=build, configure_dir=self._full_source_subfolder, vars={"XML_CONFIG": xml_config})
         env_build.make(args=["install", "V=1"])
 

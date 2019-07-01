@@ -1,3 +1,5 @@
+[![Build Status AppVeyor](https://ci.appveyor.com/api/projects/status/github/qtwebkit/conan-libxslt?branch=stable%2F2.9.9&svg=true)](https://ci.appveyor.com/project/annulen/conan-libxslt)
+
 ## Conan package recipe for [*libxslt*](http://xmlsoft.org/XSLT/)
 
 libxslt is a software library implementing XSLT processor, based on libxml2. It also implements most of the EXSLT set

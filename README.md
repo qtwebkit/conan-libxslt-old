@@ -1,4 +1,4 @@
-[![Build Status AppVeyor](https://ci.appveyor.com/api/projects/status/github/qtwebkit/conan-libxslt?branch=stable%2F2.9.9&svg=true)](https://ci.appveyor.com/project/annulen/conan-libxslt)
+[![Build Status AppVeyor](https://ci.appveyor.com/api/projects/status/github/qtwebkit/conan-libxslt?branch=stable%2F1.1.33&svg=true)](https://ci.appveyor.com/project/annulen/conan-libxslt)
 
 ## Conan package recipe for [*libxslt*](http://xmlsoft.org/XSLT/)
 

@@ -129,7 +129,6 @@ class LibxsltConan(ConanFile):
         env_build.make(args=["install", "V=1"])
 
     def package(self):
-        #self.copy("FindLibXml2.cmake", ".", ".")
         # copy package license
         self.copy("COPYING", src=self._full_source_subfolder, dst="licenses", ignore_case=True, keep_path=False)
         if self.settings.os == "Windows":
@@ -137,28 +136,16 @@ class LibxsltConan(ConanFile):
             for prefix in ["run", "test"]:
                 for test in glob.glob("%s/bin/%s*" % (self.package_folder, prefix)):
                     os.remove(test)
-#        for header in ["win32config.h", "wsockcompat.h"]:
-#            self.copy(pattern=header, src=os.path.join(self._full_source_subfolder, "include"),
-#                      dst=os.path.join("include", "libxml2"), keep_path=False)
-#        if self._is_msvc:
-#            # remove redundant libraries to avoid confusion
-#            os.unlink(os.path.join(self.package_folder, 'lib', 'libxml2_a_dll.lib'))
-#            os.unlink(os.path.join(self.package_folder, 'lib',
-#                                   'libxml2_a.lib'))
-#                                   #'libxml1_a.lib' if self.options.shared else 'libxml2.lib'))
         la = os.path.join(self.package_folder, 'lib', 'libxslt.la')
         if os.path.isfile(la):
             os.unlink(la)
 
     def package_info(self):
         if self._is_msvc:
-            # self.cpp_info.libs = ['libxml2' if self.options.shared else 'libxml2_a']
             self.cpp_info.libs = ['libxslt']
         else:
             self.cpp_info.libs = ['xslt']
         self.cpp_info.includedirs = [os.path.join("include", "libxslt")]
-        #if not self.options.shared:
-        #    self.cpp_info.defines = ["LIBXML_STATIC"]
         if self.settings.os == "Linux" or self.settings.os == "Macos":
             self.cpp_info.libs.append('m')
         if self.settings.os == "Windows":

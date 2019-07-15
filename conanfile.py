@@ -109,10 +109,15 @@ class LibxsltConan(ConanFile):
             configure_args.extend(['--enable-shared', '--disable-static'])
         else:
             configure_args.extend(['--enable-static', '--disable-shared'])
+
+        xml_config = tools.unix_path(self.deps_cpp_info["libxml2"].rootpath) + "/bin/xml2-config"
+
         configure_args.extend([
             '--without-crypto',
             '--without-debugger',
-            '--without-plugins'])
+            '--without-plugins',
+            'XML_CONFIG=%s' % xml_config
+        ])
 
         # Disable --build when building for iPhoneSimulator. The configure script halts on
         # not knowing if it should cross-compile.
@@ -120,13 +125,7 @@ class LibxsltConan(ConanFile):
         if self.settings.os == "iOS" and self.settings.arch == "x86_64":
             build = False
 
-        xml_config = tools.unix_path(self.deps_cpp_info["libxml2"].rootpath) + "/bin/xml2-config"
-
-        self.output.info("icu include_paths = {0} rootpath={1}".format(self.deps_cpp_info["icu"].include_paths, self.deps_cpp_info["icu"].rootpath))
-
-        for p in self.deps_cpp_info["icu"].include_paths:
-            env_build.include_paths.append(tools.unix_path(p))
-        env_build.configure(args=configure_args, build=build, configure_dir=self._full_source_subfolder, vars={"XML_CONFIG": xml_config})
+        env_build.configure(args=configure_args, build=build, configure_dir=self._full_source_subfolder)
         env_build.make(args=["install", "V=1"])
 
     def package(self):

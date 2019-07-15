@@ -15,9 +15,9 @@ class LibxsltConan(ConanFile):
     homepage = "https://xmlsoft.org"
     license = "MIT"
     settings = "os", "arch", "compiler", "build_type"
-    options = {#"shared": [True, False],
+    options = {"shared": [True, False],
                "fPIC": [True, False]}
-    default_options = {#'shared': False,
+    default_options = {'shared': False,
                        'fPIC': True}
     exports = ["LICENSE.md"]
     exports_sources = ["FindLibXml2.cmake"]
@@ -55,7 +55,7 @@ class LibxsltConan(ConanFile):
     def _build_windows(self):
         with tools.chdir(os.path.join(self._full_source_subfolder, 'win32')):
             debug = "yes" if self.settings.build_type == "Debug" else "no"
-            static = "no" # if self.options.shared else "yes"
+            static = "no" if self.options.shared else "yes"
 
             with tools.vcvars(self.settings):
                 args = ["cscript",
@@ -105,7 +105,7 @@ class LibxsltConan(ConanFile):
         configure_args = ['--with-python=no', '--prefix=%s' % full_install_subfolder]
         if env_build.fpic:
             configure_args.extend(['--with-pic'])
-        if True: # self.options.shared:
+        if self.options.shared:
             configure_args.extend(['--enable-shared', '--disable-static'])
         else:
             configure_args.extend(['--enable-static', '--disable-shared'])

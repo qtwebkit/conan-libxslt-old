@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import glob
 import os
-from conans import ConanFile, tools, AutoToolsBuildEnvironment
+from conans import ConanFile, tools, AutoToolsBuildEnvironment, VisualStudioBuildEnvironment
 
 
 class LibxsltConan(ConanFile):
@@ -90,7 +90,8 @@ class LibxsltConan(ConanFile):
 
                 fix_library(True, 'icu', 'wsock32.lib')
 
-                self.run("nmake /f Makefile.msvc install")
+                with tools.environment_append(VisualStudioBuildEnvironment(self).vars):
+                    self.run("nmake /f Makefile.msvc install")
 
     def _build_with_configure(self):
         in_win = self.settings.os == "Windows"

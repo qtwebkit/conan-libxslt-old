@@ -145,7 +145,7 @@ class LibxsltConan(ConanFile):
             self.cpp_info.libs = ['libxslt']
         else:
             self.cpp_info.libs = ['xslt']
-        self.cpp_info.includedirs = [os.path.join("include", "libxslt")]
+        self.cpp_info.includedirs.append(os.path.join("include", "libxslt"))
         if self.settings.os == "Linux" or self.settings.os == "Macos":
             self.cpp_info.libs.append('m')
         if self.settings.os == "Windows":

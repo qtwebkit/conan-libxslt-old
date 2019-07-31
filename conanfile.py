@@ -24,7 +24,7 @@ class LibxsltConan(ConanFile):
     _source_subfolder = "source_subfolder"
 
     def requirements(self):
-        self.requires("libxml2/2.9.9@qtproject/stable")
+        self.requires("libxml2/2.9.9@bincrafters/stable")
 
     @property
     def _is_msvc(self):

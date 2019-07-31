@@ -76,20 +76,26 @@ class LibxsltConan(ConanFile):
                 self.run(configure_command)
 
                 # Fix library names because they can be not just zlib.lib
+                def format_libs(package):
+                    libs = []
+                    for lib in self.deps_cpp_info[package].libs:
+                        libname = lib
+                        if not libname.endswith('.lib'):
+                            libname += '.lib'
+                        libs.append(libname)
+                    return ' '.join(libs)
+
                 def fix_library(option, package, old_libname):
                     if option:
-                        libs = []
-                        for lib in self.deps_cpp_info[package].libs:
-                            libname = lib
-                            if not libname.endswith('.lib'):
-                                libname += '.lib'
-                            libs.append(libname)
                         tools.replace_in_file("Makefile.msvc",
                                               "LIBS = %s" % old_libname,
-                                              "LIBS = %s" % ' '.join(libs))
+                                              "LIBS = %s" % format_libs(package))
 
                 if "icu" in self.deps_cpp_info.deps:
                     fix_library(True, 'icu', 'wsock32.lib')
+
+                tools.replace_in_file("Makefile.msvc", "libxml2.lib", format_libs("libxml2"))
+                tools.replace_in_file("Makefile.msvc", "libxml2_a.lib", format_libs("libxml2"))
 
                 with tools.environment_append(VisualStudioBuildEnvironment(self).vars):
                     self.run("nmake /f Makefile.msvc install")

@@ -8,7 +8,7 @@ from conans import ConanFile, tools, AutoToolsBuildEnvironment, VisualStudioBuil
 class LibxsltConan(ConanFile):
     name = "libxslt"
     version = "1.1.33"
-    url = "https://github.com/qtwebkit/conan-libxslt"
+    url = "https://github.com/bincrafters/conan-libxslt"
     description = "libxslt is a software library implementing XSLT processor, based on libxml2"
     author = "Bincrafters <bincrafters@gmail.com>"
     topics = "XSLT", "processor"

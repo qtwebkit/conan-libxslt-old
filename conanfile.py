@@ -149,7 +149,7 @@ class LibxsltConan(ConanFile):
 
     def package_info(self):
         if self._is_msvc:
-            self.cpp_info.libs = ['libxslt']
+            self.cpp_info.libs = ['libxslt' if self.options.shared else 'libxslt_a']
         else:
             self.cpp_info.libs = ['xslt']
         self.cpp_info.includedirs.append(os.path.join("include", "libxslt"))

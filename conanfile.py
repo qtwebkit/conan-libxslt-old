@@ -143,6 +143,19 @@ class LibxsltConan(ConanFile):
             for prefix in ["run", "test"]:
                 for test in glob.glob("%s/bin/%s*" % (self.package_folder, prefix)):
                     os.remove(test)
+        if self.settings.compiler == "Visual Studio":
+            if self.settings.build_type == "Debug":
+                os.unlink(os.path.join(self.package_folder, "bin", "libexslt.pdb"))
+                os.unlink(os.path.join(self.package_folder, "bin", "libxslt.pdb"))
+                os.unlink(os.path.join(self.package_folder, "bin", "xsltproc.pdb"))
+            if self.options.shared:
+                os.unlink(os.path.join(self.package_folder, "lib", "libxslt_a.lib"))
+                os.unlink(os.path.join(self.package_folder, "lib", "libexslt_a.lib"))
+            else:
+                os.unlink(os.path.join(self.package_folder, "lib", "libxslt.lib"))
+                os.unlink(os.path.join(self.package_folder, "lib", "libexslt.lib"))
+                os.unlink(os.path.join(self.package_folder, "bin", "libxslt.dll"))
+                os.unlink(os.path.join(self.package_folder, "bin", "libexslt.dll"))
         la = os.path.join(self.package_folder, 'lib', 'libxslt.la')
         if os.path.isfile(la):
             os.unlink(la)

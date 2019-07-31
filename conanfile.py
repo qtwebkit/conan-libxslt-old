@@ -88,7 +88,8 @@ class LibxsltConan(ConanFile):
                                               "LIBS = %s" % old_libname,
                                               "LIBS = %s" % ' '.join(libs))
 
-                fix_library(True, 'icu', 'wsock32.lib')
+                if "icu" in self.deps_cpp_info.deps:
+                    fix_library(True, 'icu', 'wsock32.lib')
 
                 with tools.environment_append(VisualStudioBuildEnvironment(self).vars):
                     self.run("nmake /f Makefile.msvc install")
